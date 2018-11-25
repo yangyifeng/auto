@@ -1,19 +1,12 @@
 auto();
 
-var alertmsg = '1. 先在手机「设置」中设置本 app 以下权限：\n';
-alertmsg += 'a. 无障碍服务 \n';
-alertmsg += 'b. 悬浮窗权限 \n';
-alertmsg += '2. 打开 xx 并进去 xxx 之后，回到本 app \n';
-alertmsg += '3. 点击「确定」开始运行脚本'
-
-alert(alertmsg);
-
-app.launchPackage("com.alibaba.android.rimet");
-
 var path = files.getSdcardPath();
 path += '/1/' + Date.parse(new Date()) + ".csv";
 
+//用于保存
 var text = [];
+//用户重复校验
+var textRead = [];
 
 var canRead = true;
 
@@ -24,7 +17,8 @@ function onepage(order){
     var all = id("list_view").findOne().children();
     if(!all[order].find(id("ll_name_mobile")).empty()){
         all[order].click();
-        sleep(1500);
+        //随机翻页，避免被认为机器人
+        sleep(random(1,3)*1000);
         id("user_info_tip_tv").untilFind();
         var tname = id("user_header_full_name").findOne().text();
         var tphone = "";
@@ -45,23 +39,32 @@ function onepage(order){
         onepage(order+1);
     }
     else{
-        sleep(1000);
+        //随机翻页，避免被认为机器人
+        sleep(random(1,3)*1000);
         canRead = scrollDown()
-        print("下一屏幕")
-        if(!canRead){
+        print("下一屏幕");
+        if(text.length >= 10){
             files.append(path, text.join('\n'), 'GBK');
+            text.length = 0;
+        }
+        if(!canRead){
+            if(text.length > 1){
+                files.append(path, text.join('\n'), 'GBK');
+            }
             console.hide();
-            alert("读完了，一共写入" + text.length + "个号码，保存在" + path)
+            alert("完成。保存在" + path)
         }
         else{
-            sleep(1000);
+            //随机翻页，避免被认为机器人
+            sleep(random(1,3)*1000);
             onepage(0);
         }
     }
 }
 
 function arrayDis(chil){
-    if(text.indexOf(chil) == -1){
+    if(textRead.indexOf(chil) == -1){
+        textRead.push(chil);
         text.push(chil);
         return true;
     }
@@ -75,6 +78,8 @@ var canCreate = files.createWithDirs(path);
 print('创建文件：' + canCreate);
 
 if(canCreate){
+    print('创建文件：' + path);
+    print('每获取10个号码则自动保存一次');
     onepage(0);
 }
 else{
