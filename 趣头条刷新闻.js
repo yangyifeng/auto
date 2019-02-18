@@ -1,6 +1,6 @@
 function 新闻列表一页(page){
-    var c = id('z9').find();
-log(c.length + ',' + page)
+    var c = id('p4').find();
+    log(c.length + ',' + page)
     if(c.length == 0 || page >= c.length){
         sleep(1000);
         swipe(500, device.height-300, 500, 300, 500)
@@ -10,12 +10,13 @@ log(c.length + ',' + page)
         新闻列表一页(0);
     }
     else{        
-        c[page].parent().click();
+        log('进来')
+        c[page].children().findOne(id('a1h')).click();
 
         //不看全图片新闻，滚动麻烦
-        var back3 = id('i8').find();
+        var back3 = id('ii').find();
         if(!back3.empty()){
-            id('i8').findOne().click();
+            id('ii').findOne().click();
         }
         else{
             sleep(3000);
@@ -72,10 +73,10 @@ log(c.length + ',' + page)
             swipe(500, 300, 500, device.height-300, 500);
             sleep(3000);
 
-            var back1 = id('ft').find();
+            var back1 = id('g6').find();
             var back2 = id('nm').find();
             if(!back1.empty()){
-                id('ft').click();
+                id('g6').click();
             }
             if(!back2.empty()){
                 id('nm').findOne().parent().click();
